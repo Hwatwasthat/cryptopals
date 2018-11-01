@@ -4,29 +4,29 @@ import (
 	"unicode"
 )
 
-// GuessString takes a byte array and XORs against 00->FF, returning the most
-// likely string to be an english sentence prodiced by this.
-func GuessString(b []byte) string {
-	guessArray := make([]string, 256)
-	for i := 0; i < 256; i++ {
-		guessArray[i] = string(SbXor(b, byte(i)))
-	}
-	return MostEnglish(guessArray)
+type Stringval struct {
+	guess string
+	val   int
 }
 
 // MostEnglish takes a slice of strings and returns the string most likely to
 // be an English sentence.
-func MostEnglish(s []string) string {
+func MostEnglish(bytes ...[]byte) (int, string) {
 	var maxVal uint64
 	var maxStr string
-	for _, line := range s {
-
-		val := EnglishFreq(line)
-		if val > maxVal {
-			maxVal, maxStr = val, line
+	var maxIdx int
+	for _, b := range bytes {
+		for i := 0; i < 128; i++ {
+			guess := string(SbXor(b, byte(i)))
+			val := EnglishFreq(guess)
+			if val > maxVal {
+				maxIdx, maxVal, maxStr = i, val, guess
+				//fmt.Printf("%v ", maxIdx)
+			}
 		}
+		//fmt.Println()
 	}
-	return maxStr
+	return maxIdx, maxStr
 }
 
 // EnglishFreq takes a string and returns the  value representing
@@ -60,7 +60,7 @@ func EnglishFreq(s string) uint64 {
 		'X': 15,
 		'Y': 197,
 		'Z': 7,
-		' ': 2400,
+		' ': 1200,
 	}
 
 	for _, char := range s {

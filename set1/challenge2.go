@@ -19,10 +19,7 @@ func Challenge2() {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
-	xorbytes, err := utilities.XorBytes(fbytes, sbytes)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
+	xorbytes := utilities.XorBytes(fbytes, sbytes)
 	for _, v := range xorbytes {
 		fmt.Printf("%02X", v)
 	}

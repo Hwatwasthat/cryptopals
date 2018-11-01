@@ -21,13 +21,15 @@ func Challenge4() {
 }
 
 func guessFile(lines []string) string {
-	guessArray := make([]string, len(lines))
+	guessArray := make([][]byte, len(lines))
 	for i, line := range lines {
 		bytes, err := hex.DecodeString(line)
 		if err != nil {
 			log.Fatal(err)
 		}
-		guessArray[i] = utilities.GuessString(bytes)
+		_, guess := utilities.MostEnglish(bytes)
+		guessArray[i] = []byte(guess)
 	}
-	return utilities.MostEnglish(guessArray)
+	_, ret := utilities.MostEnglish(guessArray...)
+	return ret
 }

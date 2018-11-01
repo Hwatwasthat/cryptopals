@@ -6,10 +6,15 @@ import (
 )
 
 const (
-	maxKeysize    = 32   // limit keysearch space
-	maxIterations = 8    // limit amount of repeat checks
+	maxKeysize    = 40 // limit keysearch space
+	maxIterations = 16
 	accuracyMod   = 1000 // to avoid rounding problems
 )
+
+type key struct {
+	size    uint16 // No key is larger than a 16byte number
+	hamDist uint64
+}
 
 // HammingDistance returns the hamming distance of two passed in byte slices.
 // Must be of equal length. Returns a uint64 of the hamming distance and an
@@ -22,37 +27,48 @@ func HammingDistance(x, y []byte) (uint64, error) {
 	return ret, nil
 }
 
-func FindKeysize(x []byte) ([]uint64, error) {
-	possibleKeysizes := make([]uint64, maxKeysize)
-	for i, j := 2, 0; i*maxIterations < len(x) && i < maxKeysize; i, j = i+1, 0 {
-		var temp uint64
-		for ; j < maxIterations; j++ {
-			offset := i * j
-			nextOffset := i * (j + 1)
-			temp += hamUnsafe(x[offset:offset+i], x[nextOffset:nextOffset+i])
+// FindKeySize takes a byte slice and works out the likely size of the key it has been Xored against
+func FindKeySize(x []byte) ([]uint16, error) {
+	keyFreq := make([]key, maxKeysize)
+	for i := 2; i*2 < len(x) && i < maxKeysize; i++ {
+		keyFreq[i].size = uint16(i)
+
+		chunked, err := Chunkify(x, i)
+		if err != nil {
+			break // we've passed the slice size, time to leave
 		}
-		possibleKeysizes[i] = (temp * accuracyMod) / uint64(i) / uint64(j)
+
+		var j int
+		var temp uint64
+		for ; j+1 < len(chunked) && j < maxIterations; j++ {
+			temp += hamUnsafe(chunked[j], chunked[j+1])
+		}
+		keyFreq[i].hamDist = (temp * accuracyMod) / uint64(i) / uint64(j)
 	}
 
-	sort.Slice(possibleKeysizes, func(i, j int) bool { return possibleKeysizes[i] < possibleKeysizes[j] })
-	startOfReturn := 0 // we want to ignore 0 values
-	for i := 0; i < len(possibleKeysizes); i++ {
-		if possibleKeysizes[i] > 0 {
-			startOfReturn = i
-			break
+	sort.Slice(keyFreq, func(i, j int) bool { return keyFreq[i].hamDist < keyFreq[j].hamDist })
+	var possibleKeySizes []uint16
+	for i := 0; i < len(keyFreq); i++ {
+		//fmt.Println("Key size:", keyFreq[i].size, "key hamDist:", keyFreq[i].hamDist)
+		if keyFreq[i].hamDist > 0 { // we want to ignore 0 values
+			possibleKeySizes = append(possibleKeySizes, keyFreq[i].size)
 		}
 	}
-	return possibleKeysizes[startOfReturn : startOfReturn+5], nil
+	return possibleKeySizes, nil
 }
 
 func hamUnsafe(x, y []byte) uint64 {
 	var ret uint64
-	xored, _ := XorBytes(x, y) // safe to ignore error, sepereate check in wrapper
+	xored := XorBytes(x, y) // safe to ignore error, sepereate check in wrapper
 	for _, v := range xored {
 		var i uint
 		for ; i < 8; i++ {
-			ret += uint64((v >> i) & 1)
+			ret += uint64((v >> i) & 0x01)
 		}
 	}
 	return ret
 }
+
+//func GCD(s []uint64) uint64 {
+//	// TODO
+//}
