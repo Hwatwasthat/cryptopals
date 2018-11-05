@@ -1,17 +1,26 @@
 package utilities
 
 import (
+	"os"
+	"sync"
 	"unicode"
 )
 
-type Stringval struct {
-	guess string
-	val   int
+type MERet struct { // struct to hold the return values from MostEnglish
+	Guess   string
+	XorByte byte
+}
+
+func ConMMostEnglish(c chan MERet, wg *sync.WaitGroup, bytes ...[]byte) {
+	defer wg.Done()
+	var ret MERet
+	ret.XorByte, _ = MostEnglish(bytes...)
+	c <- ret
 }
 
 // MostEnglish takes a slice of strings and returns the string most likely to
 // be an English sentence.
-func MostEnglish(bytes ...[]byte) (int, string) {
+func MostEnglish(bytes ...[]byte) (byte, string) {
 	var maxVal uint64
 	var maxStr string
 	var maxIdx int
@@ -26,7 +35,7 @@ func MostEnglish(bytes ...[]byte) (int, string) {
 		}
 		//fmt.Println()
 	}
-	return maxIdx, maxStr
+	return byte(maxIdx), maxStr
 }
 
 // EnglishFreq takes a string and returns the  value representing
@@ -69,4 +78,8 @@ func EnglishFreq(s string) uint64 {
 		}
 	}
 	return total
+}
+
+func DetectECB(f *os.File) []byte {
+	// TODO implement
 }
