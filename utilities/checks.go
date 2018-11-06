@@ -1,19 +1,19 @@
 package utilities
 
 import (
-	"os"
+	"crypto/aes"
 	"sync"
 	"unicode"
 )
 
-type MERet struct { // struct to hold the return values from MostEnglish
+type GuessstringByte struct { // struct to hold the return values from MostEnglish
 	Guess   string
 	XorByte byte
 }
 
-func ConMMostEnglish(c chan MERet, wg *sync.WaitGroup, bytes ...[]byte) {
+func ConMMostEnglish(c chan GuessstringByte, wg *sync.WaitGroup, bytes ...[]byte) {
 	defer wg.Done()
-	var ret MERet
+	var ret GuessstringByte
 	ret.XorByte, _ = MostEnglish(bytes...)
 	c <- ret
 }
@@ -80,6 +80,12 @@ func EnglishFreq(s string) uint64 {
 	return total
 }
 
-func DetectECB(f *os.File) []byte {
-	// TODO implement
+func DetectECB(line []byte) uint64 {
+	var ret uint64
+	for i := 0; i+aes.BlockSize < len(line); i += aes.BlockSize {
+		firstBlock := line[i : i+aes.BlockSize]
+		secondBlock := line[i+aes.BlockSize : i+(aes.BlockSize*2)]
+		ret += hamUnsafe(firstBlock, secondBlock)
+	}
+	return ret
 }

@@ -32,7 +32,7 @@ func Challenge6(filename string) {
 	transposed := utilities.Transpose(decodedBytes, keysize[0]) // dangerous assumption that keysize[0] is accurate
 
 	wg := &sync.WaitGroup{}
-	c := make(chan utilities.MERet)
+	c := make(chan utilities.GuessstringByte)
 	for _, s := range transposed {
 		wg.Add(1)
 		go utilities.ConMMostEnglish(c, wg, s) // concurrent implementation of MostEnglish
@@ -50,7 +50,7 @@ func Challenge6(filename string) {
 
 }
 
-func monitorWG(wg *sync.WaitGroup, c chan utilities.MERet) {
+func monitorWG(wg *sync.WaitGroup, c chan utilities.GuessstringByte) {
 	wg.Wait()
 	close(c)
 }

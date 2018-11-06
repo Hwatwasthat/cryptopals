@@ -68,7 +68,3 @@ func hamUnsafe(x, y []byte) uint64 {
 	}
 	return ret
 }
-
-//func GCD(s []uint64) uint64 {
-//	// TODO
-//}
