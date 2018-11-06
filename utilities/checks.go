@@ -2,6 +2,7 @@ package utilities
 
 import (
 	"crypto/aes"
+	"cryptopals/crypt/xor"
 	"sync"
 	"unicode"
 )
@@ -26,7 +27,7 @@ func MostEnglish(bytes ...[]byte) (byte, string) {
 	var maxIdx int
 	for _, b := range bytes {
 		for i := 0; i < 128; i++ {
-			guess := string(SbXor(b, byte(i)))
+			guess := string(xor.SingleByte(b, byte(i)))
 			val := EnglishFreq(guess)
 			if val > maxVal {
 				maxIdx, maxVal, maxStr = i, val, guess

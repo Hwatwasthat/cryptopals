@@ -1,6 +1,7 @@
 package utilities
 
 import (
+	"cryptopals/crypt/xor"
 	"errors"
 	"sort"
 )
@@ -49,7 +50,6 @@ func FindKeySize(x []byte) ([]uint16, error) {
 	sort.Slice(keyFreq, func(i, j int) bool { return keyFreq[i].hamDist < keyFreq[j].hamDist })
 	var possibleKeySizes []uint16
 	for i := 0; i < len(keyFreq); i++ {
-		//fmt.Println("Key size:", keyFreq[i].size, "key hamDist:", keyFreq[i].hamDist)
 		if keyFreq[i].hamDist > 0 { // we want to ignore 0 values
 			possibleKeySizes = append(possibleKeySizes, keyFreq[i].size)
 		}
@@ -59,7 +59,7 @@ func FindKeySize(x []byte) ([]uint16, error) {
 
 func hamUnsafe(x, y []byte) uint64 {
 	var ret uint64
-	xored := XorBytes(x, y) // safe to ignore error, sepereate check in wrapper
+	xored := xor.Slices(x, y) // safe to ignore error, separate check in wrapper
 	for _, v := range xored {
 		var i uint
 		for ; i < 8; i++ {

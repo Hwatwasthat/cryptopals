@@ -1,7 +1,7 @@
 package set1
 
 import (
-	"cryptopals/utilities"
+	"cryptopals/crypt/xor"
 	"encoding/hex"
 	"fmt"
 	"os"
@@ -19,7 +19,7 @@ func Challenge2() {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
-	xorbytes := utilities.XorBytes(fbytes, sbytes)
+	xorbytes := xor.Slices(fbytes, sbytes)
 	for _, v := range xorbytes {
 		fmt.Printf("%02X", v)
 	}

@@ -2,6 +2,7 @@ package set1
 
 import (
 	"crypto/aes"
+	"cryptopals/crypt/modes"
 	"encoding/base64"
 	"fmt"
 	"io/ioutil"
@@ -21,15 +22,19 @@ func Challenge7(filename string) {
 	}
 
 	key := ("YELLOW SUBMARINE")
+	ret := AESECBEncrypt(decodedBytes, []byte(key))
 
-	aesKey, err := aes.NewCipher([]byte(key))
+	fmt.Println(string(ret))
+}
+
+func AESECBEncrypt(src []byte, key []byte) []byte {
+	aesKey, err := aes.NewCipher(key)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	ret := make([]byte, len(decodedBytes))
-	for i := 0; i < len(decodedBytes); i += aes.BlockSize {
-		aesKey.Decrypt(ret[i:i+aes.BlockSize], decodedBytes[i:i+aes.BlockSize])
-	}
 
-	fmt.Println(string(ret))
+	cryptor := modes.NewECBEncrypter(aesKey)
+	ret := make([]byte, len(src))
+	cryptor.CryptBlocks(ret, src)
+	return ret
 }

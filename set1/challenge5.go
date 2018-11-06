@@ -1,7 +1,7 @@
 package set1
 
 import (
-	"cryptopals/utilities"
+	"cryptopals/crypt/xor"
 	"encoding/hex"
 	"fmt"
 )
@@ -9,7 +9,7 @@ import (
 func Challenge5() {
 	s := "Burning 'em, if you ain't quick and nimble I go crazy when I hear a cymbal"
 	key := "ICE"
-	result := utilities.RepKeyXor([]byte(s), []byte(key))
+	result := xor.RepKey([]byte(s), []byte(key))
 	rs := hex.EncodeToString(result)
 	fmt.Println(rs)
 }

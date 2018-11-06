@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"crypto/aes"
 	"cryptopals/utilities"
+	"fmt"
 	"log"
 	"os"
 	"sort"
@@ -40,4 +41,5 @@ func Challenge8(filename string) {
 		lineNo++
 	}
 	sort.Slice(hammed, func(i, j int) bool { return hammed[i].ham < hammed[j].ham })
+	fmt.Println(hammed[0].line, hammed[0].ham)
 }

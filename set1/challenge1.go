@@ -12,6 +12,7 @@ func Challenge1() {
 	b64 := StrHexToBase64(s)
 	fmt.Println(b64)
 }
+
 func StrHexToBase64(s string) string {
 	bytes, err := hex.DecodeString(s)
 	if err != nil {

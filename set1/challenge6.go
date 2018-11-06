@@ -1,6 +1,7 @@
 package set1
 
 import (
+	"cryptopals/crypt/xor"
 	"cryptopals/utilities"
 	"encoding/base64"
 	"fmt"
@@ -17,8 +18,8 @@ func Challenge6(filename string) {
 	}
 	defer file.Close()
 
-	// Create a base64 decoder for the file, which implements io.reader, which we pass to be read
-	decodedBytes, err := ioutil.ReadAll(base64.NewDecoder(base64.StdEncoding, file))
+	b64 := base64.NewDecoder(base64.StdEncoding, file)
+	decodedBytes, err := ioutil.ReadAll(b64)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -38,14 +39,14 @@ func Challenge6(filename string) {
 		go utilities.ConMMostEnglish(c, wg, s) // concurrent implementation of MostEnglish
 	}
 
-	go monitorWG(wg, c) // close channel when its empty by keeping an eye on wg size, only launch after filling!
+	go monitorWG(wg, c)
 
 	var guesses []byte
 	for ret := range c {
 		guesses = append(guesses, ret.XorByte)
 	}
 
-	result := utilities.RepKeyXor(decodedBytes, guesses)
+	result := xor.RepKey(decodedBytes, guesses)
 	fmt.Println(string(result))
 
 }
