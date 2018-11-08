@@ -1,7 +1,7 @@
 package set1
 
 import (
-	"cryptopals/utilities"
+	"cryptopals/utilities/english"
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
@@ -27,9 +27,9 @@ func guessFile(lines []string) string {
 		if err != nil {
 			log.Fatal(err)
 		}
-		_, guess := utilities.MostEnglish(bytes)
+		_, guess := english.GuessString(bytes)
 		guessArray[i] = []byte(guess)
 	}
-	_, ret := utilities.MostEnglish(guessArray...)
+	_, ret := english.GuessString(guessArray...)
 	return ret
 }

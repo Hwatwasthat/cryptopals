@@ -1,7 +1,7 @@
 package set1
 
 import (
-	"cryptopals/crypt/xor"
+	"cryptopals/utilities/crypt/xor"
 	"encoding/hex"
 	"fmt"
 	"os"

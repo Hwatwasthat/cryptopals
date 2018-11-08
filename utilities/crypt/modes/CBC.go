@@ -2,8 +2,8 @@ package modes
 
 import (
 	"crypto/cipher"
-	"cryptopals/crypt/xor"
 	"cryptopals/utilities"
+	"cryptopals/utilities/crypt/xor"
 	"log"
 )
 

@@ -1,7 +1,7 @@
 package utilities
 
 import (
-	"cryptopals/crypt/xor"
+	"cryptopals/utilities/crypt/xor"
 	"errors"
 	"sort"
 )
@@ -24,7 +24,7 @@ func HammingDistance(x, y []byte) (uint64, error) {
 	if len(x) != len(y) {
 		return 0, errors.New("hamming error: must be of same length")
 	}
-	ret := hamUnsafe(x, y)
+	ret := HamUnsafe(x, y)
 	return ret, nil
 }
 
@@ -42,7 +42,7 @@ func FindKeySize(x []byte) ([]uint16, error) {
 		var j int
 		var temp uint64
 		for ; j+1 < len(chunked) && j < maxIterations; j++ {
-			temp += hamUnsafe(chunked[j], chunked[j+1])
+			temp += HamUnsafe(chunked[j], chunked[j+1])
 		}
 		keyFreq[i].hamDist = (temp * accuracyMod) / uint64(i) / uint64(j)
 	}
@@ -57,7 +57,7 @@ func FindKeySize(x []byte) ([]uint16, error) {
 	return possibleKeySizes, nil
 }
 
-func hamUnsafe(x, y []byte) uint64 {
+func HamUnsafe(x, y []byte) uint64 {
 	var ret uint64
 	xored := xor.Slices(x, y) // safe to ignore error, separate check in wrapper
 	for _, v := range xored {

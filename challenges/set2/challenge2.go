@@ -2,8 +2,8 @@ package set2
 
 import (
 	"crypto/aes"
-	"cryptopals/crypt/modes"
 	"cryptopals/utilities"
+	"cryptopals/utilities/crypt/modes"
 	"fmt"
 	"log"
 )

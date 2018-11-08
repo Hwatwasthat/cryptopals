@@ -1,7 +1,7 @@
 package set2
 
 import (
-	"cryptopals/crypt/padding"
+	"cryptopals/utilities/crypt/padding"
 	"fmt"
 )
 

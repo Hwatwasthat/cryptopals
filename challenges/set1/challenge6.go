@@ -1,8 +1,9 @@
 package set1
 
 import (
-	"cryptopals/crypt/xor"
 	"cryptopals/utilities"
+	"cryptopals/utilities/crypt/xor"
+	"cryptopals/utilities/english"
 	"encoding/base64"
 	"fmt"
 	"io/ioutil"
@@ -33,10 +34,10 @@ func Challenge6(filename string) {
 	transposed := utilities.Transpose(decodedBytes, keysize[0]) // dangerous assumption that keysize[0] is accurate
 
 	wg := &sync.WaitGroup{}
-	c := make(chan utilities.GuessstringByte)
+	c := make(chan english.GuessstringByte)
 	for _, s := range transposed {
 		wg.Add(1)
-		go utilities.ConMMostEnglish(c, wg, s) // concurrent implementation of MostEnglish
+		go english.ConcurrentGuessString(c, wg, s) // concurrent implementation of MostEnglish
 	}
 
 	go monitorWG(wg, c)
@@ -51,7 +52,7 @@ func Challenge6(filename string) {
 
 }
 
-func monitorWG(wg *sync.WaitGroup, c chan utilities.GuessstringByte) {
+func monitorWG(wg *sync.WaitGroup, c chan english.GuessstringByte) {
 	wg.Wait()
 	close(c)
 }
