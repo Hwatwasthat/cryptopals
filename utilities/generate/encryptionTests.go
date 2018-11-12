@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+// RandomAESEncryption Takes a provided plaintext as a slice of bytes and generates a random AES key and randomly
+// decides between CBC and EBC mode. Returns an encrypted byte slice.
 func RandomAESEncryption(plaintext []byte) []byte {
 	rand.Seed(time.Now().Unix()) // Seed RNG for goodness
 
@@ -34,12 +36,12 @@ func RandomAESEncryption(plaintext []byte) []byte {
 
 	ret := make([]byte, len(temp))
 	switch rand.Intn(2) { // Decide what mode of encryption to use
-	case 0:
+	case 0: // EBC
 		block := modes.NewECBEncrypter(aesKey)
 		block.CryptBlocks(ret, temp)
-	case 1:
+	case 1: // CBC
 		iv := make([]byte, aesKey.BlockSize())
-		rand.Read(iv) // create random IV if we're doing CBC
+		rand.Read(iv) // create random IV
 		block := cipher.NewCBCEncrypter(aesKey, iv)
 		block.CryptBlocks(ret, temp)
 	}

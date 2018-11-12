@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func Challenge3() {
+func Challenge3(test english.Tester) {
 	bytes, _ := hex.DecodeString("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736")
-	fmt.Println(english.GuessString(bytes))
+	fmt.Println(test.GuessString(bytes))
 }

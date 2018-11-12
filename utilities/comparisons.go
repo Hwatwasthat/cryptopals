@@ -1,6 +1,11 @@
+/*
+Package utilities provides a grouping of functions to assist in the Cryptopals challenges. Root utilities handle basic
+functionality that is generic across embedded packages.
+*/
 package utilities
 
 import (
+	"crypto/aes"
 	"cryptopals/utilities/crypt/xor"
 	"errors"
 	"sort"
@@ -28,7 +33,8 @@ func HammingDistance(x, y []byte) (uint64, error) {
 	return ret, nil
 }
 
-// FindKeySize takes a byte slice and works out the likely size of the key it has been Xored against
+// FindKeySize takes a byte slice and works out the likely size of the key it has been Xored against. takes two
+// byte slices and returns a slice of uint16s representing the potential keysizes and an error.
 func FindKeySize(x []byte) ([]uint16, error) {
 	keyFreq := make([]key, maxKeysize)
 	for i := 2; i*2 < len(x) && i < maxKeysize; i++ {
@@ -57,9 +63,22 @@ func FindKeySize(x []byte) ([]uint16, error) {
 	return possibleKeySizes, nil
 }
 
+func DetectECB(line []byte) uint64 {
+	var ret uint64
+	for i := 0; i+aes.BlockSize < len(line); i += aes.BlockSize {
+		firstBlock := line[i : i+aes.BlockSize]
+		secondBlock := line[i+aes.BlockSize : i+(aes.BlockSize*2)]
+		ret += HamUnsafe(firstBlock, secondBlock)
+	}
+	return ret
+}
+
+// HamUnsafe provides a hamming function without length checks, to provide easier integration at the expense
+// of guaranteeing safety. Use HammingDistance in preference where possible. Takes two byte slices and returns
+// a uint64 of the bit level hamming distance.
 func HamUnsafe(x, y []byte) uint64 {
 	var ret uint64
-	xored := xor.Slices(x, y) // safe to ignore error, separate check in wrapper
+	xored := xor.Slices(x, y)
 	for _, v := range xored {
 		var i uint
 		for ; i < 8; i++ {

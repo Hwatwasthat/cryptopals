@@ -6,5 +6,5 @@ import (
 )
 
 func Challenge3() {
-	fmt.Println(generate.RandomAESEncryption([]byte("YELLOW SUBMARINE")))
+	fmt.Printf("% 02X\n", generate.RandomAESEncryption([]byte("YELLOW SUBMARINE")))
 }
