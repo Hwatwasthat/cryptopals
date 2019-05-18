@@ -48,9 +48,9 @@ func Chunkify(src []byte, chunkSize int) ([][]byte, error) {
 // Transpose takes a slice of bytes and a chunkSize and returns a slice of slices of bytes. Each slice is composed of
 // the respective bytes at the index % chunkSize of the original slice.
 // Example:
-// slice := [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+// slice := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
 // ret := Transpose(slice, 4)
-// ret -> [[0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15]]
+// ret -> [][]int{{0, 4, 8, 12}, {1, 5, 9, 13}, {2, 6, 10, 14}, {3, 7, 11, 15}}
 func Transpose(bytes []byte, chunkSize uint16) [][]byte {
 	ret := make([][]byte, chunkSize)
 	for i := 0; i < len(bytes); i++ {

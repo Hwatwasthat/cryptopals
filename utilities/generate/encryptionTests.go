@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"cryptopals/utilities/crypt/modes"
 	"cryptopals/utilities/crypt/padding"
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -23,8 +24,8 @@ func RandomAESEncryption(plaintext []byte) []byte {
 		log.Fatalln(err)
 	}
 
-	temp := make([]byte, rand.Intn(6)) // Initialise with random len header
-	end := make([]byte, rand.Intn(6))  // Create end bytes
+	temp := make([]byte, 5 + rand.Intn(6)) // Initialise with random len header
+	end := make([]byte, 5 + rand.Intn(6))  // Create end bytes
 	rand.Read(temp)                    // Fill header
 	rand.Read(end)                     // Fill end bytes
 	temp = append(temp, plaintext...)  // Build slice to be encrypted
@@ -39,11 +40,13 @@ func RandomAESEncryption(plaintext []byte) []byte {
 	case 0: // EBC
 		block := modes.NewECBEncrypter(aesKey)
 		block.CryptBlocks(ret, temp)
+		fmt.Println("ECB")
 	case 1: // CBC
 		iv := make([]byte, aesKey.BlockSize())
 		rand.Read(iv) // create random IV
 		block := cipher.NewCBCEncrypter(aesKey, iv)
 		block.CryptBlocks(ret, temp)
+		fmt.Println("CBC")
 	}
 	return ret
 }

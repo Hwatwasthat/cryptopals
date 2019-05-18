@@ -36,7 +36,7 @@ func Freq(s string) uint64 {
 		'X': 15,
 		'Y': 197,
 		'Z': 7,
-		' ': 1200,
+		' ': 1270,
 	}
 
 	for _, char := range s {
